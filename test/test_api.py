@@ -64,19 +64,19 @@ def test_search_books_eng():
     assert response.status_code == 200, f"Ожидался статус-код 200, но получен {response.status_code}"
 
 @allure.feature("API")
-@allure.story("Пустое поле поиска")
+@allure.story("Поиск по символам")
 @pytest.mark.api_test
 @pytest.mark.negative_test
-def test_search_empty():
+def test_search_unicode_symbols():
     headers = {
         'content-type': 'application/json',
-        'authorization': f'Bearer {TOKEN}'
+        'authorization': f'Bearer {API_TOKEN}'
     }
 
-    response = requests.get(f"{BASE_URL_2}/search/product?phrase=", headers=headers)
-    assert response.status_code == 400, f"Ожидался статус-код 200, но получен {response.status_code}"
-    assert 'Phrase обязательное поле' in response.text
-
+    response = requests.get(
+        f"{BASE_URL_2}/search/product?phrase=)))))))))))", headers=headers)
+    assert response.status_code == 422, f"Ожидался статус-код 422, но получен {
+        response.status_code}"
 
 @allure.feature("API")
 @allure.story("Пробел")
@@ -140,7 +140,7 @@ def test_add_book_to_cart():
     assert response.status_code == 200, f"Ожидался статус-код 200, но получен {response.status_code}"
 
 @allure.feature("API")
-@allure.story("Получение списка товаров в корзине")
+@allure.story("Получение списка книг в корзине")
 @pytest.mark.api_test
 @pytest.mark.positive_test
 def test_get_cart():
